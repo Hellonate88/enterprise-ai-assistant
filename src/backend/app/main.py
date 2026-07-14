@@ -1,15 +1,12 @@
 from fastapi import FastAPI
+from app.api import health
 
 
 app = FastAPI(
-    title="Enterprise AI Assistant API",
-    version="0.1.0"
+    title="Enterprise AI Assistant"
 )
 
 
-@app.get("/health")
-def health_check():
-    return {
-        "status": "running",
-        "service": "AI Assistant API"
-    }
+app.include_router(
+    health.router
+)
