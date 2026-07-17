@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, Depends
 from pathlib import Path
 from app.schemas.document import DocumentResponse
-from app.services.document_service import create_document
+from app.services.document_service import DocumentService
 from app.core.dependencies import get_db
 
 router = APIRouter(
@@ -28,9 +28,23 @@ async def upload_document(
             await file.read()
         )
 
-    create_document(db, filename=file.filename, filepath=str(file_path), status="uploaded")
+    # create_document(db, filename=file.filename, filepath=str(file_path), status="uploaded")
+
+    # return {
+    #     "filename": file.filename,
+    #     "status": "uploaded"
+    # }
+
+
+    service = DocumentService(db)
+
+    document = service.upload_document(
+        filename=file.filename,
+        filepath=str(file_path)
+    )
 
     return {
-        "filename": file.filename,
-        "status": "uploaded"
+        "id": document.id,
+        "filename": document.filename,
+        "status": document.status
     }
