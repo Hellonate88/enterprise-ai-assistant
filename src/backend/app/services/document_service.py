@@ -12,9 +12,13 @@
 #     return document
 
 
+from pathlib import Path
+
 from sqlalchemy.orm import Session
 
 from app.repositories.document_repository import DocumentRepository
+
+from app.models.document import Document
 
 
 class DocumentService:
@@ -35,3 +39,21 @@ class DocumentService:
         )
 
         return document
+    
+    def get_all_documents(self):
+        return self.repository.get_all()
+    
+    def delete_document(self, document_id: int):
+
+        #storage 文件夹删除
+        document = self.repository.get_by_id(document_id)
+        if document and document.filepath:
+            file_path = Path(document.filepath)
+            if file_path.exists():
+                file_path.unlink()  # Delete the file from the filesystem
+
+        #数据库真正删除
+        self.repository.delete(document_id)
+
+
+

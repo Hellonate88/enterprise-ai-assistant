@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 from app.models.document import Document
 
+from pathlib import Path
 
 class DocumentRepository:
 
@@ -28,3 +29,21 @@ class DocumentRepository:
         self.db.refresh(document)
 
         return document
+
+    def get_all(self) -> list[Document]:
+        return (
+            self.db.query(Document)
+            .order_by(Document.id.desc())
+            .all()
+        )
+    
+    def delete(self, document_id: int):
+        document = self.db.query(Document).filter(Document.id == document_id).first()
+
+        if document:
+            self.db.delete(document)
+            self.db.commit()
+    
+    def get_by_id(self, document_id: int) -> Document | None:
+        return self.db.query(Document).filter(Document.id == document_id).first()
+

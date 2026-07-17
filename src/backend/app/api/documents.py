@@ -48,3 +48,21 @@ async def upload_document(
         "filename": document.filename,
         "status": document.status
     }
+
+@router.get("/all", response_model=list[DocumentResponse])
+def get_all_documents(db = Depends(get_db)):
+    service = DocumentService(db)
+
+    documents = service.get_all_documents()
+
+    return documents
+
+@router.delete("/{document_id}")
+def delete_document(document_id: int, db = Depends(get_db)):
+    service = DocumentService(db)
+
+    service.delete_document(document_id)
+
+    return {
+        "message": f"Document with ID {document_id} has been deleted."
+    }
