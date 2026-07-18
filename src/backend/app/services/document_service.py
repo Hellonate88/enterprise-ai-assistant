@@ -54,6 +54,17 @@ class DocumentService:
 
         #数据库真正删除
         self.repository.delete(document_id)
+    
+    def get_document(self, document_id: int) -> Document | None:
+        document = self.repository.get_by_id(document_id)
+
+        if document is None:
+
+            raise ValueError(
+                "Document not found"
+            )
+
+        return document
 
 
 

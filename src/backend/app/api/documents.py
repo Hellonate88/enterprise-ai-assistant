@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, Depends
+from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
 from pathlib import Path
 from app.schemas.document import DocumentResponse
 from app.services.document_service import DocumentService
@@ -46,7 +46,8 @@ async def upload_document(
     return {
         "id": document.id,
         "filename": document.filename,
-        "status": document.status
+        "status": document.status,
+        "created_at": document.created_at
     }
 
 @router.get("/all", response_model=list[DocumentResponse])
@@ -66,3 +67,24 @@ def delete_document(document_id: int, db = Depends(get_db)):
     return {
         "message": f"Document with ID {document_id} has been deleted."
     }
+
+@router.get(
+    "/{document_id}",
+    response_model=DocumentResponse
+)
+def get_document(
+    document_id: int,
+    db = Depends(get_db)
+):
+
+    service = DocumentService(db)
+
+    try:
+        return service.get_document(document_id)
+
+    except ValueError:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found"
+        )

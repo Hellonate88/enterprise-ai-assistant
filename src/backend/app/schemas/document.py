@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -12,3 +14,5 @@ class DocumentResponse(BaseModel):
     #filepath: str
 
     status: str
+
+    created_at: datetime
