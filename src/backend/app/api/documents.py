@@ -88,3 +88,57 @@ def get_document(
             status_code=404,
             detail="Document not found"
         )
+    
+@router.put("/{document_id}/processing")
+def set_processing(
+    document_id: int,
+    db = Depends(get_db)
+):
+
+    service = DocumentService(db)
+
+    document = service.mark_processing(document_id)
+
+    if document is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found"
+        )
+
+    return document
+
+@router.put("/{document_id}/ready")
+def set_ready(
+    document_id: int,
+    db = Depends(get_db)
+):
+
+    service = DocumentService(db)
+
+    document = service.mark_ready(document_id)
+
+    if document is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found"
+        )
+
+    return document
+
+@router.put("/{document_id}/failed")
+def set_failed(
+    document_id: int,
+    db = Depends(get_db)
+):
+
+    service = DocumentService(db)
+
+    document = service.mark_failed(document_id)
+
+    if document is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found"
+        )
+
+    return document

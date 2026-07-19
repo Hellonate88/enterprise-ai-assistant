@@ -14,6 +14,7 @@
 
 from pathlib import Path
 
+from app.models.document_status import DocumentStatus
 from sqlalchemy.orm import Session
 
 from app.repositories.document_repository import DocumentRepository
@@ -65,6 +66,33 @@ class DocumentService:
             )
 
         return document
+    
+    def mark_processing(
+        self,
+        document_id: int
+    ):
+        return self.repository.update_status(
+            document_id,
+            DocumentStatus.PROCESSING
+        )
+
+    def mark_ready(
+        self,
+        document_id: int
+    ):
+        return self.repository.update_status(
+            document_id,
+            DocumentStatus.READY
+        )
+
+    def mark_failed(
+        self,
+        document_id: int
+    ):
+        return self.repository.update_status(
+            document_id,
+            DocumentStatus.FAILED
+        )
 
 
 

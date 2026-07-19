@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.models.document import Document
+from app.models.document_status import DocumentStatus
 
 from pathlib import Path
 
@@ -46,4 +47,23 @@ class DocumentRepository:
     
     def get_by_id(self, document_id: int) -> Document | None:
         return self.db.query(Document).filter(Document.id == document_id).first()
+    
+    def update_status(
+        self,
+        document_id: int,
+        status: DocumentStatus
+    ):
+
+        document = self.get_by_id(document_id)
+
+        if document is None:
+            return None
+
+        document.status = status
+
+        self.db.commit()
+
+        self.db.refresh(document)
+
+        return document
 
