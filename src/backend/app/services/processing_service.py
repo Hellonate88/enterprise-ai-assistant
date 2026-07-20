@@ -13,7 +13,7 @@ class ProcessingService:
     def __init__(self, db: Session):
         self.repository = DocumentRepository(db)
 
-    def process_document(self, document_id: int, document_name: str | None = None):
+    def process_document(self, document_id: int):
 
         logger.info(f"Start processing document {document_id}")
 
