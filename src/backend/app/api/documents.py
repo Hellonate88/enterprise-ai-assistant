@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
+from fastapi import APIRouter, BackgroundTasks, HTTPException, UploadFile, File, Depends
 from pathlib import Path
 from app.schemas.document import DocumentResponse
 from app.services.document_service import DocumentService
 from app.core.dependencies import get_db
+from app.services.processing_service import ProcessingService
 
 router = APIRouter(
     prefix="/documents",
@@ -15,6 +16,7 @@ UPLOAD_FOLDER = Path("app/storage")
 
 @router.post("/upload", response_model=DocumentResponse)
 async def upload_document(
+    background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     db = Depends(get_db)
 ):
@@ -43,12 +45,12 @@ async def upload_document(
         filepath=str(file_path)
     )
 
-    return {
-        "id": document.id,
-        "filename": document.filename,
-        "status": document.status,
-        "created_at": document.created_at
-    }
+    processing_service = ProcessingService(db)
+    background_tasks.add_task(
+        processing_service.process_document,
+        document.id
+    )
+    return document
 
 @router.get("/all", response_model=list[DocumentResponse])
 def get_all_documents(db = Depends(get_db)):
