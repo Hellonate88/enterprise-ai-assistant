@@ -16,7 +16,7 @@ class DocumentRepository:
         filepath: str,
         status: str
     ) -> Document:
-
+        
         document = Document(
             filename=filename,
             filepath=filepath,
@@ -60,6 +60,25 @@ class DocumentRepository:
             return None
 
         document.status = status
+
+        self.db.commit()
+
+        self.db.refresh(document)
+
+        return document
+    
+    
+    def update_raw_text(
+        self,
+        document_id: int,
+        raw_text: str
+    ):
+        document = self.get_by_id(document_id)
+
+        if document is None:
+            return None
+
+        document.text = raw_text
 
         self.db.commit()
 

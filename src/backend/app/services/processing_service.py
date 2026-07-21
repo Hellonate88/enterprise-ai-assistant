@@ -1,10 +1,14 @@
 import time
 import logging
 
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.repositories.document_repository import DocumentRepository
 from app.models.document_status import DocumentStatus
+from app.services.text_extraction_service import TextExtractionService
+from app.repositories.chunk_repository import ChunkRepository
+from app.services.chunking_service import ChunkingService
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +41,24 @@ class ProcessingService:
             logger.info(f"Document {document_id} is FAILED")
 
         else:
+            text = TextExtractionService().extract_text(
+                document.filepath
+            )
+
+            self.repository.update_raw_text(
+                document_id,
+                text
+            )
+
+            # Chunk
+            chunks = ChunkingService().split_text(text)
+
+            # save Chunk
+            ChunkRepository(self.repository.db).create_chunks(
+                document.id,
+                chunks
+            )
+
             self.repository.update_status(
                 document_id,
                 DocumentStatus.READY
