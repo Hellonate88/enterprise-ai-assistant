@@ -17,3 +17,8 @@ Roadmap
 ⬜ RAG
 
 ⬜ Azure OpenAI
+
+
+how to run the application 
+1. cd .\src\backend\  
+2. venv\Scripts\activate  

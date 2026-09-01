@@ -11,7 +11,9 @@ class ChunkRepository:
         self,
         document_id: int,
         chunks: list[str]
-    ):
+    ) -> list[DocumentChunk]:
+
+        chunk_entities = []
 
         for index, chunk_text in enumerate(chunks):
 
@@ -24,4 +26,13 @@ class ChunkRepository:
 
             self.db.add(chunk)
 
+            chunk_entities.append(chunk)
+
+        # 一次性提交
         self.db.commit()
+
+        # 刷新，拿到自动生成的 id
+        for chunk in chunk_entities:
+            self.db.refresh(chunk)
+
+        return chunk_entities

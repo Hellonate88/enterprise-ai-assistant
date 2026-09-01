@@ -1,67 +1,112 @@
 import time
 import logging
 
-from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.repositories.document_repository import DocumentRepository
-from app.models.document_status import DocumentStatus
-from app.services.text_extraction_service import TextExtractionService
 from app.repositories.chunk_repository import ChunkRepository
+from app.repositories.embedding_repository import EmbeddingRepository
+
+from app.models.document_status import DocumentStatus
+
+from app.services.text_extraction_service import TextExtractionService
 from app.services.chunking_service import ChunkingService
+from app.services.embedding_service import EmbeddingService
+from  app.services.embedding_service import FakeEmbeddingProvider
 
 logger = logging.getLogger(__name__)
 
 class ProcessingService:
 
     def __init__(self, db: Session):
-        self.repository = DocumentRepository(db)
+        self.db = db
+        self.document_repository = DocumentRepository(db)
+        self.chunk_repository = ChunkRepository(db)
+        self.embedding_repository = EmbeddingRepository(db)
 
     def process_document(self, document_id: int):
 
-        logger.info(f"Start processing document {document_id}")
+        try:
 
-        # 1. 更新为 PROCESSING
-        self.repository.update_status(
-            document_id,
-            DocumentStatus.PROCESSING
-        )
+            document = self.document_repository.get_by_id(document_id)
 
-        # 2. 模拟耗时 AI 任务
-        time.sleep(3)
+            if document is None:
+                logger.error(f"Document {document_id} not found")
+                return
 
-        document = self.repository.get_by_id(document_id)
-
-        if "fail" in document.filename.lower():
-            self.repository.update_status(
-                document_id,
-                DocumentStatus.FAILED
+            # 1. PROCESSING
+            self.document_repository.update_status(
+                document.id,
+                DocumentStatus.PROCESSING
             )
 
-            logger.info(f"Document {document_id} is FAILED")
-
-        else:
+            # 2. 提取文本
             text = TextExtractionService().extract_text(
                 document.filepath
             )
 
-            self.repository.update_raw_text(
-                document_id,
+            # 3. 保存原始文本
+            self.document_repository.update_raw_text(
+                document.id,
                 text
             )
 
-            # Chunk
+            # 4. Chunk
             chunks = ChunkingService().split_text(text)
 
-            # save Chunk
-            ChunkRepository(self.repository.db).create_chunks(
+            # 5. 保存 Chunk
+            chunk_entities = self.chunk_repository.create_chunks(
                 document.id,
                 chunks
             )
 
-            self.repository.update_status(
-                document_id,
+            # 6. 生成 Embedding
+            ##embedding_service = EmbeddingService()
+            embedding_service = FakeEmbeddingProvider()
+
+            for chunk in chunk_entities:
+
+                # 缓存检查（Challenge）
+                existing = self.embedding_repository.get_by_chunk_id(
+                    chunk.id
+                )
+
+                if existing:
+                    logger.info(
+                        f"Embedding already exists for chunk {chunk.id}"
+                    )
+                    continue
+
+                vector = embedding_service.generate_embedding(
+                    chunk.content
+                )
+
+                self.embedding_repository.create(
+                    chunk_id=chunk.id,
+                    model=FakeEmbeddingProvider.DIM, ##model=EmbeddingService.MODEL,
+                    vector=vector
+                )
+
+            # 7. READY
+            self.document_repository.update_status(
+                document.id,
                 DocumentStatus.READY
             )
 
-            logger.info(f"Document {document_id} is READY")
+            logger.info(
+                f"Document {document_id} processed successfully"
+            )
+
+        except Exception as e:
+
+            logger.exception(
+                f"Processing failed for document {document_id}: {e}"
+            )
+
+            document = self.document_repository.get_by_id(document_id)
+
+            if document:
+                self.document_repository.update_status(
+                    document.id,
+                    DocumentStatus.FAILED
+                )

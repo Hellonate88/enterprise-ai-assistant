@@ -21,4 +21,16 @@ class DocumentChunk(Base):
 
     char_count = Column(Integer, nullable=False)
 
-    document = relationship("Document", back_populates="chunks")
+    # 反向关系
+    document = relationship(
+        "Document",
+        back_populates="chunks"
+    )
+
+    # 一个 Chunk 对应一个 Embedding
+    embedding = relationship(
+        "ChunkEmbedding",
+        back_populates="chunk",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
