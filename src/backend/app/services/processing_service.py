@@ -12,17 +12,17 @@ from app.models.document_status import DocumentStatus
 from app.services.text_extraction_service import TextExtractionService
 from app.services.chunking_service import ChunkingService
 from app.services.embedding_service import EmbeddingService
-from  app.services.embedding_service import FakeEmbeddingProvider
 
 logger = logging.getLogger(__name__)
 
 class ProcessingService:
 
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, embedding_service: EmbeddingService | None = None):
         self.db = db
         self.document_repository = DocumentRepository(db)
         self.chunk_repository = ChunkRepository(db)
         self.embedding_repository = EmbeddingRepository(db)
+        self.embedding_service = embedding_service or EmbeddingService()
 
     def process_document(self, document_id: int):
 
@@ -61,9 +61,6 @@ class ProcessingService:
             )
 
             # 6. 生成 Embedding
-            ##embedding_service = EmbeddingService()
-            embedding_service = FakeEmbeddingProvider()
-
             for chunk in chunk_entities:
 
                 # 缓存检查（Challenge）
@@ -77,13 +74,13 @@ class ProcessingService:
                     )
                     continue
 
-                vector = embedding_service.generate_embedding(
+                vector = self.embedding_service.generate_embedding(
                     chunk.content
                 )
 
                 self.embedding_repository.create(
                     chunk_id=chunk.id,
-                    model=FakeEmbeddingProvider.DIM, ##model=EmbeddingService.MODEL,
+                    model=self.embedding_service.provider.model_name,
                     vector=vector
                 )
 
