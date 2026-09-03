@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from app.models.chunk_embedding import ChunkEmbedding
+from ..models.chunk_embedding import ChunkEmbedding
 
 class EmbeddingRepository:
 
@@ -39,3 +39,6 @@ class EmbeddingRepository:
             .filter(ChunkEmbedding.chunk_id == chunk_id)
             .first()
         )
+
+    def get_all_embeddings(self):
+        return self.db.query(ChunkEmbedding).all()

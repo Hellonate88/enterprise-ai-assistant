@@ -1,6 +1,23 @@
 import pytest
-from src.backend.app.services.embedding import FakeEmbeddingProvider
+from src.backend.app.services.embedding import EmbeddingProvider, FakeEmbeddingProvider
 from src.backend.app.services.embedding_service import EmbeddingService
+
+
+class AnotherFakeEmbeddingProvider(EmbeddingProvider):
+    """A second fake provider for testing provider swapping.
+    
+    Returns a fixed vector [0.5, 0.5, ..., 0.5] with dimension 1536.
+    """
+
+    DIM = 1536
+
+    @property
+    def model_name(self) -> str:
+        return "another-fake-embedding"
+
+    def generate_embedding(self, text: str) -> list[float]:
+        """Always return [0.5] * 1536."""
+        return [0.5] * self.DIM
 
 
 class TestEmbeddingService:
