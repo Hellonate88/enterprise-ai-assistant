@@ -5,6 +5,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from app.api import health
 from app.api import documents
+from app.api.chat import router as chat_router
 
 
 logging.basicConfig(
@@ -48,3 +49,5 @@ app.include_router(
 app.include_router(
     documents.router
 )
+
+app.include_router(chat_router)
