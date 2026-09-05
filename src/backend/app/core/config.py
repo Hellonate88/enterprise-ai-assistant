@@ -5,7 +5,7 @@ class Settings(BaseSettings):
 
     app_name: str = "AI Knowledge Assistant"
 
-    llm_provider: str = "ollama"
+    llm_provider: str = "fake"
 
     ollama_model: str = "llama3.2"
 
