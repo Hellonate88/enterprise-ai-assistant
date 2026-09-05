@@ -34,7 +34,14 @@ class ChatService:
             question=question
         )
 
-        answer = self.llm_service.generate(prompt)
+        # Generate answer with error handling
+        try:
+            answer = self.llm_service.generate(prompt)
+        except Exception as e:
+            raise RuntimeError(
+                "Failed to communicate with LLM provider. "
+                "Please ensure the LLM service is running."
+            ) from e
 
         # Extract sources (chunk IDs)
         sources = [f"chunk_{doc['chunk_id']}" for doc in retrieved_docs]

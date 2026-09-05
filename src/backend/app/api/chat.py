@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_db
@@ -10,6 +10,7 @@ from app.services.embedding_service import EmbeddingService
 from app.services.llm.fake_llm_provider import FakeLLMProvider
 from app.services.llm.llm_service import LLMService
 from app.services.retrieval_service import RetrievalService
+from app.services.llm.llm_provider_factory import LLMProviderFactory
 
 router = APIRouter(
     prefix="/chat",
@@ -37,7 +38,7 @@ def chat(
         embedding_repository=embedding_repository
     )
 
-    llm_provider = FakeLLMProvider()
+    llm_provider = LLMProviderFactory.create()
     llm_service = LLMService(llm_provider)
 
     chat_service = ChatService(
@@ -45,7 +46,14 @@ def chat(
         llm_service=llm_service
     )
 
-    return chat_service.ask(
-        question=request.question,
-        top_k=request.top_k
-    )
+    try:
+        return chat_service.ask(
+            question=request.question,
+            top_k=request.top_k
+        )
+    except RuntimeError as e:
+        raise HTTPException(
+            status_code=503,
+            detail="AI Provider currently unavailable. "
+                   "Please ensure all services are running."
+        ) from e

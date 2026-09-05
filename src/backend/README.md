@@ -22,3 +22,7 @@ Roadmap
 how to run the application 
 1. cd .\src\backend\  
 2. venv\Scripts\activate  
+
+how to restart the application
+1. cd .\src\backend\
+2. uvicorn app.main:app --reload
