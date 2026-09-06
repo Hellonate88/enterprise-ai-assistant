@@ -18,7 +18,8 @@ class LLMProviderFactory:
         if settings.llm_provider == "ollama":
 
             return OllamaLLMProvider(
-                model=settings.ollama_model
+                model=settings.ollama_model,
+                base_url=settings.ollama_base_url
             )
 
 
