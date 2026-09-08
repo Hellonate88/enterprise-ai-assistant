@@ -11,12 +11,12 @@ class LLMProviderFactory:
     def create() -> LLMProvider:
 
         if settings.llm_provider == "fake":
-
+            print(f"🤖 Using LLM Provider: fake")
             return FakeLLMProvider()
 
 
         if settings.llm_provider == "ollama":
-
+            print(f"🤖 Using LLM Provider: ollama (model={settings.ollama_model}, url={settings.ollama_base_url})")
             return OllamaLLMProvider(
                 model=settings.ollama_model,
                 base_url=settings.ollama_base_url

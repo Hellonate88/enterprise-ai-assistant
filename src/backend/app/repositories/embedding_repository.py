@@ -42,3 +42,14 @@ class EmbeddingRepository:
 
     def get_all_embeddings(self):
         return self.db.query(ChunkEmbedding).all()
+
+    def delete_all(self) -> int:
+
+        count = (
+            self.db.query(ChunkEmbedding)
+            .delete()
+        )
+
+        self.db.commit()
+
+        return count

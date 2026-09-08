@@ -98,7 +98,8 @@ def cosine_similarity(
 
     if len(vector_a) != len(vector_b):
         raise ValueError(
-            "Vectors must have the same dimensions"
+            f"Vectors must have the same dimensions. "
+            f"Got {len(vector_a)} and {len(vector_b)}"
         )
 
     dot_product = sum(

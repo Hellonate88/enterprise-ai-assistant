@@ -36,3 +36,14 @@ class ChunkRepository:
             self.db.refresh(chunk)
 
         return chunk_entities
+
+    def get_all(self) -> list[DocumentChunk]:
+
+        return (
+            self.db.query(DocumentChunk)
+            .order_by(
+                DocumentChunk.document_id,
+                DocumentChunk.chunk_index
+            )
+            .all()
+        )

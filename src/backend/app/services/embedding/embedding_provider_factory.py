@@ -18,11 +18,11 @@ class EmbeddingProviderFactory:
     def create() -> EmbeddingProvider:
 
         if settings.embedding_provider == "fake":
-
+            print(f"📊 Using Embedding Provider: fake")
             return FakeEmbeddingProvider()
 
         if settings.embedding_provider == "ollama":
-
+            print(f"📊 Using Embedding Provider: ollama (model={settings.ollama_embedding_model}, url={settings.ollama_base_url})")
             return OllamaEmbeddingProvider(
                 model=settings.ollama_embedding_model,
                 base_url=settings.ollama_base_url

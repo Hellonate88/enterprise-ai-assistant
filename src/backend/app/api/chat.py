@@ -5,9 +5,10 @@ from app.core.dependencies import get_db
 from app.repositories.embedding_repository import EmbeddingRepository
 from app.schemas.chat import ChatRequest, ChatResponse
 from app.services.chat_service import ChatService
-from app.services.embedding.fake_embedding_provider import FakeEmbeddingProvider
+from app.services.embedding.embedding_provider_factory import (
+    EmbeddingProviderFactory
+)
 from app.services.embedding_service import EmbeddingService
-from app.services.llm.fake_llm_provider import FakeLLMProvider
 from app.services.llm.llm_service import LLMService
 from app.services.retrieval_service import RetrievalService
 from app.services.llm.llm_provider_factory import LLMProviderFactory
@@ -25,7 +26,7 @@ def chat(
     request: ChatRequest,
     db: Session = Depends(get_db)
 ):
-    embedding_provider = FakeEmbeddingProvider()
+    embedding_provider = EmbeddingProviderFactory.create()
 
     embedding_service = EmbeddingService(
         embedding_provider
