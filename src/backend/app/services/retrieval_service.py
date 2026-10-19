@@ -55,10 +55,16 @@ class RetrievalService:
             self.embedding_service.generate_embedding(query)
         )
 
-        # Step 2: Get All Stored Embeddings
-        embeddings = (
-            self.embedding_repository.get_all_embeddings()
+        # Step 2: Get All Stored Embeddings by model name
+        current_model = (
+            self.embedding_service.model_name
         )
+
+        embeddings = (
+            self.embedding_repository.get_embeddings_by_model(
+                current_model
+    )
+)
 
         # Handle empty embeddings gracefully
         if not embeddings:
@@ -79,6 +85,7 @@ class RetrievalService:
                 result = {
                     "chunk_id": embedding.chunk.id,
                     "document_id": embedding.chunk.document_id,
+                    "filename": embedding.chunk.document.filename,
                     "content": embedding.chunk.content,
                     "score": score
                 }

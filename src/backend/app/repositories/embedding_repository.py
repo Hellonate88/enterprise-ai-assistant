@@ -53,3 +53,15 @@ class EmbeddingRepository:
         self.db.commit()
 
         return count
+
+
+    def get_embeddings_by_model(
+        self,
+        model: str
+    ) -> list[ChunkEmbedding]:
+
+        return (
+            self.db.query(ChunkEmbedding)
+            .filter(ChunkEmbedding.model == model)
+            .all()
+        )

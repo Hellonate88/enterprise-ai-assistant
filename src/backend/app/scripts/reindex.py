@@ -6,9 +6,15 @@ from app.repositories.embedding_repository import (
 )
 from app.services.embedding_service import EmbeddingService
 from app.services.reindex_service import ReindexService
+from app.core.config import settings
 
 
 def main():
+
+    print(f"🔄 Starting reindex with configuration:")
+    print(f"   Embedding Provider: {settings.embedding_provider}")
+    print(f"   LLM Provider: {settings.llm_provider}")
+    print()
 
     db = SessionLocal()
 
@@ -28,6 +34,8 @@ def main():
 
         result = reindex_service.reindex_all()
 
+        print()
+        print(f"✅ Reindex completed:")
         print(result)
 
     finally:

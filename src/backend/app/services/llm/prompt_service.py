@@ -5,18 +5,18 @@ class PromptService:
         context: str,
         question: str
     ) -> str:
-        return f"""You are a helpful assistant.
+        return f"""You are a helpful AI assistant.
 
-            Answer the question using ONLY the provided context.
+Answer the user's question using ONLY the provided context.
 
-            If the answer cannot be found in the context,
-            say that you do not know.
+If the answer cannot be found in the context, say:
 
-            Context:
+"I don't know based on the provided documents."
 
-            {context}
+Do not use outside knowledge.
 
-            Question:
+Context:
+{context}
 
-            {question}
-            """
+Question:
+{question}"""

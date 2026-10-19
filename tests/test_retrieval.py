@@ -92,7 +92,7 @@ def test_retrieve_returns_top_k():
     embedding_3.chunk = chunk_3
     embedding_3.vector_json = [0.5, 0.1, 0.2, 0.3, 0.4] * 307 + [0.5]  # Different
 
-    embedding_repo.get_all_embeddings.return_value = [
+    embedding_repo.get_embeddings_by_model.return_value = [
         embedding_1,
         embedding_2,
         embedding_3
@@ -139,7 +139,7 @@ def test_retrieve_empty_embeddings():
 
     # Setup mock embedding repository
     embedding_repo = Mock()
-    embedding_repo.get_all_embeddings.return_value = []  # Empty database
+    embedding_repo.get_embeddings_by_model.return_value = []  # Empty database
 
     # Create retrieval service
     retrieval_service = RetrievalService(

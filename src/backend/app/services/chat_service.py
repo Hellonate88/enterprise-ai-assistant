@@ -43,8 +43,18 @@ class ChatService:
                 "Please ensure the LLM service is running."
             ) from e
 
-        # Extract sources (chunk IDs)
-        sources = [f"chunk_{doc['chunk_id']}" for doc in retrieved_docs]
+        # Build sources from retrieved documents
+        # Principle: Avoid Unnecessary Data Access - use existing data, don't re-query DB
+        sources = [
+            {
+                "document_id": doc["document_id"],
+                "chunk_id": doc["chunk_id"],
+                "filename": doc["filename"],
+                "content": doc["content"],
+                "score": doc["score"]
+            }
+            for doc in retrieved_docs
+        ]
 
         return {
             "answer": answer,
