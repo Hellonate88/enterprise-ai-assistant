@@ -1,0 +1,44 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Storage
+storage/
+
+# Environment variables
+.env
+.env.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+
+# downloaded Ollama
+# powershell run ollama --version
+# ollama pull llama3.2
+# ollama run llama3.2
