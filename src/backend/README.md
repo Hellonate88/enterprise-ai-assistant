@@ -54,11 +54,19 @@ Ensure Ollama is running and accessible at:
 http://localhost:11434
 
 2. Configure the Backend
-Navigate to the backend project directory and activate your Python virtual environment.
+Navigate to the backend project directory. Create and activate a virtual environment:
+
+```powershell
+py -3.14 -m venv venv314
+.\venv314\Scripts\Activate.ps1
+```
 
 Install the dependencies:
 
+```powershell
 python -m pip install -r requirements.txt
+```
+
 Configure the local environment variables in .env:
 
 LLM_PROVIDER=ollama
@@ -66,6 +74,13 @@ EMBEDDING_PROVIDER=ollama
 OLLAMA_MODEL=llama3.2
 OLLAMA_EMBEDDING_MODEL=nomic-embed-text
 OLLAMA_BASE_URL=http://localhost:11434
+
+Create or update the SQLite database schema before starting the backend:
+
+```powershell
+python create_tables.py
+```
+
 Start the FastAPI application using the project's actual application entry point. For example:
 
 uvicorn app.main:app --reload
@@ -146,8 +161,13 @@ The core application is implemented, and the current test suite has been reporte
 
 how to run the application 
 1. cd .\src\backend\  
-2. venv\Scripts\activate  
+2. py -3.14 -m venv venv314
+3. .\venv314\Scripts\Activate.ps1
+4. python -m pip install -r requirements.txt
+5. python create_tables.py
+6. uvicorn app.main:app --reload
 
 how to restart the application
 1. cd .\src\backend\
-2. uvicorn app.main:app --reload
+2. .\venv314\Scripts\Activate.ps1
+3. uvicorn app.main:app --reload

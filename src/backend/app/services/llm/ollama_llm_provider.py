@@ -32,4 +32,4 @@ class OllamaLLMProvider(LLMProvider):
             ]
         )
 
-        return response.message.content
+        return response["message"]["content"]
