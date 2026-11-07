@@ -101,9 +101,12 @@ npm run dev
 Open http://localhost:3000 in your browser.
 
 4. Run Tests
-From the backend directory, run:
+From the backend directory, install the development dependencies and run the test suite:
 
+```powershell
+python -m pip install -r requirements-dev.txt
 python -m pytest -v
+```
 API Endpoints
 Method	Endpoint	Description
 POST	/documents/upload	Upload a document
