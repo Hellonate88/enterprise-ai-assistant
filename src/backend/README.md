@@ -88,6 +88,25 @@ The API documentation should be available at:
 
 http://127.0.0.1:8000/docs
 
+Run the backend with Docker
+---------------------------
+From the backend directory, build and start the API:
+
+```powershell
+docker build -t enterprise-ai-backend .
+docker run --name enterprise-ai-backend -p 8000:8000 `
+  -e OLLAMA_BASE_URL=http://host.docker.internal:11434 `
+  -v backend-data:/data `
+  -v backend-uploads:/app/app/storage `
+  enterprise-ai-backend
+```
+
+The container initializes the SQLite schema at startup. The named volumes
+preserve the database and uploaded files when the container is removed. The
+Ollama URL above assumes Ollama is running on the Windows host; change it if
+Ollama is running elsewhere. The API docs are available at
+http://localhost:8000/docs.
+
 3. Configure the Frontend
 Navigate to the frontend directory:
 

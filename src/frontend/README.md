@@ -16,6 +16,22 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Run with Docker
+
+Build the production image from the frontend directory. The API URL is compiled
+into the browser bundle at build time, so use an address the user's browser can
+reach:
+
+```powershell
+docker build --build-arg NEXT_PUBLIC_API_BASE_URL=http://localhost:8000 -t enterprise-ai-frontend .
+docker run --name enterprise-ai-frontend -p 3000:3000 enterprise-ai-frontend
+```
+
+Open [http://localhost:3000](http://localhost:3000). If the backend is hosted
+elsewhere, replace `http://localhost:8000` with its browser-accessible URL and
+rebuild the image. Do not use a Docker-internal hostname such as `backend` for
+this setting when the frontend is accessed from a browser.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
