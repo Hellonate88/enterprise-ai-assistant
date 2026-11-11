@@ -43,6 +43,9 @@ class ChunkingService:
             if chunk:
                 chunks.append(chunk)
 
+            if end >= text_length:
+                break
+
             # 计算下一块起点（保留 overlap）
             next_start = max(end - overlap, start + 1)
 

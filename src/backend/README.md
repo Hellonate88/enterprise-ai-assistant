@@ -107,6 +107,27 @@ Ollama URL above assumes Ollama is running on the Windows host; change it if
 Ollama is running elsewhere. The API docs are available at
 http://localhost:8000/docs.
 
+Run the frontend and backend with Docker Compose
+------------------------------------------------
+From the `src` directory, build and start both services:
+
+```powershell
+docker compose up --build
+```
+
+The frontend is available at http://localhost:3000, the API at
+http://localhost:8000, and the API docs at http://localhost:8000/docs.
+Compose waits for the backend health check before starting the frontend.
+Ollama is expected to run on the host at
+http://host.docker.internal:11434 by default; set `OLLAMA_BASE_URL` if it is
+running elsewhere.
+
+To run in the background, use `docker compose up --build -d`. View status and
+logs with `docker compose ps` and `docker compose logs -f`; stop the services
+with `docker compose down`. The named volumes preserve the SQLite database and
+uploaded files. Avoid `docker compose down -v` unless you intend to delete
+those data volumes.
+
 3. Configure the Frontend
 Navigate to the frontend directory:
 

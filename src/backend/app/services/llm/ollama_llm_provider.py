@@ -1,7 +1,6 @@
-from ollama import Client, chat
+from ollama import Client
 
 from app.services.llm.llm_provider import LLMProvider
-from app.core.config import settings
 
 
 class OllamaLLMProvider(LLMProvider):
@@ -29,7 +28,8 @@ class OllamaLLMProvider(LLMProvider):
                     "role": "user",
                     "content": prompt
                 }
-            ]
+            ],
+            options={"temperature": 0}
         )
 
         return response["message"]["content"]
