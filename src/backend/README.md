@@ -128,6 +128,9 @@ with `docker compose down`. The named volumes preserve the SQLite database and
 uploaded files. Avoid `docker compose down -v` unless you intend to delete
 those data volumes.
 
+For the local Kubernetes deployment and `kubectl` walkthrough, see
+[the Kubernetes guide](../k8s/README.md).
+
 3. Configure the Frontend
 Navigate to the frontend directory:
 
